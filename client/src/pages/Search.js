@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import Jumbotron from "../components/Jumbotron";
 import API from "../utils/API";
-import { Link } from "react-router-dom";
-import Card from "../components/Card";
+import ResultsCard from "../components/ResultsCard";
 import CardContainer from "../components/CardContainer";
-import { Input, TextArea, FormBtn } from "../components/SearchForm";
+import { Input, FormBtn } from "../components/SearchForm";
 
 class Search extends Component {
     state = {
@@ -20,29 +19,27 @@ class Search extends Component {
     };
 
     handleFormSubmit = event => {
-        // When the form is submitted, prevent its default behavior, get recipes update the recipes state
         event.preventDefault();
         API.searchBooks(this.state.bookSearch)
             .then(res => {
                 console.log(res.data);
                 this.setState({ books: res.data });
-                console.log(res.data);
+                this.setState({ bookSearch: "" });
             })
             .catch(err => console.log(err));
     };
 
-    //   handleFormSubmit = event => {
-    //     event.preventDefault();
-    //     if (this.state.title && this.state.author) {
-    //         API.saveBook({
-    //             title: this.state.title,
-    //             author: this.state.author,
-    //             synopsis: this.state.synopsis
-    //         })
-    //             .then(res => this.loadBooks())
-    //             .catch(err => console.log(err));
-    //     }
-    // };
+    saveBook = (index) => {
+        API.saveBook({
+            title: this.state.books[index].volumeInfo.title,
+            authors: this.state.books[index].volumeInfo.authors,
+            description: this.state.books[index].volumeInfo.description,
+            link: this.state.books[index].volumeInfo.previewLink,
+            image: this.state.books[index].volumeInfo.imageLinks.thumbnail
+        })
+            .then(res => alert(`${this.state.books[index].volumeInfo.title} was saved successfully!`))
+            .catch(err => console.log(err));
+    }
 
     render() {
         return (
@@ -67,24 +64,24 @@ class Search extends Component {
                 <CardContainer message="Search Results">
                     {this.state.books.length ? (
                         <div>
-                            {this.state.books.map(book => (
+                            {this.state.books.map((book, index) => (
                                 <div>
-                                    <Card
-                                        key={book._id}
-                                        title={book.title}
-                                        description={book.description}
-                                        authors={book.authors}
-                                        image={book.image}
-                                        link={book.link}
-                                    // handleClickEvent={this.handleClickEvent}
-                                    // deleteBook={() => this.deleteBook(book._id)}
+                                    <ResultsCard
+                                        title={book.volumeInfo.title}
+                                        authors={book.volumeInfo.authors}
+                                        description={book.volumeInfo.description}
+                                        link={book.volumeInfo.previewLink}
+                                        image={book.volumeInfo.imageLinks.thumbnail}
+                                        key={book.id}
+                                        index={index}
+                                        saveBook={() => this.saveBook(index)}
                                     />
                                 </div>
                             ))}
                         </div>
                     ) : (<h3>No Results to Display</h3>)}
                 </CardContainer>
-            </div>
+            </div >
         )
     }
 }

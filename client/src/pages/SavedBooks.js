@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import Jumbotron from "../components/Jumbotron";
 import API from "../utils/API";
-import { Link } from "react-router-dom";
-import Card from "../components/Card";
+import SavedCard from "../components/SavedCard";
 import CardContainer from "../components/CardContainer";
 
 class SavedBooks extends Component {
@@ -37,14 +36,13 @@ class SavedBooks extends Component {
             <div>
               {this.state.books.map(book => (
                 <div>
-                  <Card
+                  <SavedCard
                     key={book._id}
                     title={book.title}
                     description={book.description}
                     authors={book.authors}
                     image={book.image}
                     link={book.link}
-                    // handleClickEvent={this.handleClickEvent}
                     deleteBook={() => this.deleteBook(book._id)}
                   />
                 </div>

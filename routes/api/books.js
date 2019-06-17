@@ -13,13 +13,20 @@ router
   .get(booksController.findById)
   .delete(booksController.remove);
 
-// Matches with /api/books/booksearch
-// router
-//   .get("/searchbooks", (req, res) => {
-//   axios
-//     .get("https://www.googleapis.com/books/v1/volumes", { params: req.query })
-//     .then(({ data: { results } }) => res.json(results))
-//     .catch(err => res.status(422).json(err));
-// });
+// Matches with /api/books/search
+router.post("/search", (req, res) => {
+  let bookTitle = req.body.query.replace(/\s/g, "+");
+  axios.get(
+      `https://www.googleapis.com/books/v1/volumes?q=${bookTitle}`
+  ).then(
+      (response) => {
+          res.json(response.data.items)
+      }
+  ).catch(
+      (err) => {
+          res.json({error: error})
+      }
+  );
+});
 
 module.exports = router;

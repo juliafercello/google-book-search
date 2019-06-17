@@ -17,10 +17,9 @@ export default {
   saveBook: function(bookData) {
     return axios.post("/api/books", bookData);
   },
-  searchBooks: function(query, res) {
-    return axios.get("https://www.googleapis.com/books/v1/volumes?q="+query)
-    .then(({ data: { results } }) => res.json(results))
-    .catch(err => res.status(422).json(err));
-  }
+  //Searches google books api
+  searchBooks: (query) => {
+    return axios.post("/api/books/search", {query: query});
+}
 
 };
